@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # UC12 – Xem lịch sử chỉnh sửa điểm (Sequence Diagram)
 
 Sơ đồ tuần tự cho use case **Xem lịch sử chỉnh sửa điểm**, actor **Hội đồng chấm thi**, vẽ theo kiến trúc **BCE (Boundary – Control – Entity)**.
@@ -10,7 +9,7 @@ Sơ đồ tuần tự cho use case **Xem lịch sử chỉnh sửa điểm**, ac
 | Actor | `HoiDongChamThi` |
 | Boundary | `GiaoDienXemLichSuChinhSuaDiem` |
 | Control | `XemLichSuChinhSuaDiemController` |
-| Entity | `KyThi`, `MonThi`, `KetQuaChamThi`, `LichSuChinhSuaDiem` |
+| Entity | `KyThi`, `MonThi`, `BaiThi`, `KetQuaChamThi`, `LichSuChinhSuaDiem` |
 
 ## Sơ đồ (ảnh)
 
@@ -25,6 +24,7 @@ sequenceDiagram
     participant CT as «control»<br/>:XemLichSuChinhSuaDiemController
     participant KT as «entity»<br/>:KyThi
     participant MT as «entity»<br/>:MonThi
+    participant BT as «entity»<br/>:BaiThi
     participant KQ as «entity»<br/>:KetQuaChamThi
     participant LS as «entity»<br/>:LichSuChinhSuaDiem
 
@@ -57,7 +57,9 @@ sequenceDiagram
         HD->>GD: 3: xacNhanTraCuu()
         GD->>CT: 3.1: traCuuKetQua(maKyThi, maMonThi, maPhach)
         activate CT
-        CT->>KQ: 3.1.1: timKetQua(maKyThi, maMonThi, maPhach)
+        CT->>BT: 3.1.1: timBaiThi(maKyThi, maMonThi, maPhach)
+        BT-->>CT: dsBaiThi
+        CT->>KQ: 3.1.2: layKetQuaChamThi(dsBaiThi)
         KQ-->>CT: dsKetQua
         CT-->>GD: dsKetQua
         deactivate CT
@@ -73,10 +75,10 @@ sequenceDiagram
             GD->>GD: 3.2c: hienThiDanhSachKetQua(dsKetQua)
 
             Note over HD,LS: Bước 8–11: Xem lịch sử chỉnh sửa
-            HD->>GD: 4: chonKetQua(maKetQua)
-            GD->>CT: 4.1: xemLichSuChinhSua(maKetQua)
+            HD->>GD: 4: chonKetQua(maBaiThi)
+            GD->>CT: 4.1: xemLichSuChinhSua(maBaiThi)
             activate CT
-            CT->>LS: 4.1.1: layLichSuTheoKetQua(maKetQua)
+            CT->>LS: 4.1.1: layLichSuChinhSua(maBaiThi)
             LS-->>CT: dsLichSu
             CT-->>GD: dsLichSu
             deactivate CT
@@ -119,6 +121,3 @@ sequenceDiagram
 | `UC12_Sequence_XemLichSuChinhSuaDiem.png` | Ảnh sơ đồ |
 | `UC12_XemLichSuChinhSuaDiem.puml` | Mã PlantUML (dán vào plantuml.com / VS Code) |
 | `UC12_XemLichSuChinhSuaDiem.mmd` | Mã Mermaid gốc (có icon boundary/control/entity) |
-=======
-# -sequence-diagram
->>>>>>> 267cfefeb8888c1613390ecb60c3f5946c3d362d

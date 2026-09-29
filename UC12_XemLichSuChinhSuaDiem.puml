@@ -4,6 +4,7 @@ boundary ":GiaoDienXemLichSuChinhSuaDiem" as GD
 control ":XemLichSuChinhSuaDiemController" as CT
 entity ":KyThi" as KT
 entity ":MonThi" as MT
+entity ":BaiThi" as BT
 entity ":KetQuaChamThi" as KQ
 entity ":LichSuChinhSuaDiem" as LS
 
@@ -36,7 +37,9 @@ else Điều kiện hợp lệ
   HD -> GD : 3: xacNhanTraCuu()
   GD -> CT : 3.1: traCuuKetQua(maKyThi, maMonThi, maPhach)
   activate CT
-  CT -> KQ : 3.1.1: timKetQua(maKyThi, maMonThi, maPhach)
+  CT -> BT : 3.1.1: timBaiThi(maKyThi, maMonThi, maPhach)
+  BT --> CT : dsBaiThi
+  CT -> KQ : 3.1.2: layKetQuaChamThi(dsBaiThi)
   KQ --> CT : dsKetQua
   CT --> GD : dsKetQua
   deactivate CT
@@ -51,10 +54,10 @@ else Điều kiện hợp lệ
   else Có kết quả
     GD -> GD : 3.2c: hienThiDanhSachKetQua(dsKetQua)
     == Bước 8–11: Xem lịch sử chỉnh sửa ==
-    HD -> GD : 4: chonKetQua(maKetQua)
-    GD -> CT : 4.1: xemLichSuChinhSua(maKetQua)
+    HD -> GD : 4: chonKetQua(maBaiThi)
+    GD -> CT : 4.1: xemLichSuChinhSua(maBaiThi)
     activate CT
-    CT -> LS : 4.1.1: layLichSuTheoKetQua(maKetQua)
+    CT -> LS : 4.1.1: layLichSuChinhSua(maBaiThi)
     LS --> CT : dsLichSu
     CT --> GD : dsLichSu
     deactivate CT

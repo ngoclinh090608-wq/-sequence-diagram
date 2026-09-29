@@ -4,6 +4,7 @@ sequenceDiagram
     participant CT@{ "type": "control", "alias": ":XemLichSuChinhSuaDiemController" }
     participant KT@{ "type": "entity", "alias": ":KyThi" }
     participant MT@{ "type": "entity", "alias": ":MonThi" }
+    participant BT@{ "type": "entity", "alias": ":BaiThi" }
     participant KQ@{ "type": "entity", "alias": ":KetQuaChamThi" }
     participant LS@{ "type": "entity", "alias": ":LichSuChinhSuaDiem" }
 
@@ -36,7 +37,9 @@ sequenceDiagram
         HD->>GD: 3: xacNhanTraCuu()
         GD->>CT: 3.1: traCuuKetQua(maKyThi, maMonThi, maPhach)
         activate CT
-        CT->>KQ: 3.1.1: timKetQua(maKyThi, maMonThi, maPhach)
+        CT->>BT: 3.1.1: timBaiThi(maKyThi, maMonThi, maPhach)
+        BT-->>CT: dsBaiThi
+        CT->>KQ: 3.1.2: layKetQuaChamThi(dsBaiThi)
         KQ-->>CT: dsKetQua
         CT-->>GD: dsKetQua
         deactivate CT
@@ -52,10 +55,10 @@ sequenceDiagram
             GD->>GD: 3.2c: hienThiDanhSachKetQua(dsKetQua)
 
             Note over HD,LS: Bước 8–11: Xem lịch sử chỉnh sửa
-            HD->>GD: 4: chonKetQua(maKetQua)
-            GD->>CT: 4.1: xemLichSuChinhSua(maKetQua)
+            HD->>GD: 4: chonKetQua(maBaiThi)
+            GD->>CT: 4.1: xemLichSuChinhSua(maBaiThi)
             activate CT
-            CT->>LS: 4.1.1: layLichSuTheoKetQua(maKetQua)
+            CT->>LS: 4.1.1: layLichSuChinhSua(maBaiThi)
             LS-->>CT: dsLichSu
             CT-->>GD: dsLichSu
             deactivate CT
