@@ -1,0 +1,74 @@
+@startuml UC12_XemLichSuChinhSuaDiem
+actor ":HoiDongChamThi" as HD
+boundary ":GiaoDienXemLichSuChinhSuaDiem" as GD
+control ":XemLichSuChinhSuaDiemController" as CT
+entity ":KyThi" as KT
+entity ":MonThi" as MT
+entity ":KetQuaChamThi" as KQ
+entity ":LichSuChinhSuaDiem" as LS
+
+== Bước 1–2: Mở chức năng ==
+HD -> GD : 1: chonXemLichSuChinhSuaDiem()
+activate GD
+GD -> CT : 1.1: layTieuChiTraCuu()
+activate CT
+CT -> KT : 1.1.1: layDanhSachKyThi()
+KT --> CT : dsKyThi
+CT -> MT : 1.1.2: layDanhSachMonThi()
+MT --> CT : dsMonThi
+CT --> GD : dsKyThi, dsMonThi
+deactivate CT
+GD -> GD : 1.2: hienThiTieuChiTraCuu(dsKyThi, dsMonThi)
+
+== Bước 3–4: Chọn và kiểm tra điều kiện ==
+HD -> GD : 2: chonDieuKienTraCuu(maKyThi, maMonThi, maPhach)
+GD -> CT : 2.1: kiemTraDieuKienTraCuu(maKyThi, maMonThi, maPhach)
+activate CT
+CT -> CT : 2.1.1: kiemTraDayDu()
+CT --> GD : hopLe
+deactivate CT
+
+alt [AF 4.1] Chưa chọn đủ điều kiện
+  GD -> GD : 2.2a: hienThiThongBao("Vui lòng chọn đầy đủ điều kiện tra cứu.")
+  note over HD, GD : Quay lại bước 3
+else Điều kiện hợp lệ
+  == Bước 5–7: Xác nhận và tìm kết quả ==
+  HD -> GD : 3: xacNhanTraCuu()
+  GD -> CT : 3.1: traCuuKetQua(maKyThi, maMonThi, maPhach)
+  activate CT
+  CT -> KQ : 3.1.1: timKetQua(maKyThi, maMonThi, maPhach)
+  KQ --> CT : dsKetQua
+  CT --> GD : dsKetQua
+  deactivate CT
+
+  alt [EF 6.2] Không truy xuất được dữ liệu
+    GD -> GD : 3.2a: hienThiThongBao("Không thể truy xuất dữ liệu kết quả chấm thi.")
+    HD -> GD : 4a: xacNhanThongBao()
+    note over HD, GD : Kết thúc use case
+  else [AF 6.1] dsKetQua rỗng
+    GD -> GD : 3.2b: hienThiThongBao("Không tìm thấy kết quả chấm thi phù hợp.")
+    note over HD, GD : Quay lại bước 3
+  else Có kết quả
+    GD -> GD : 3.2c: hienThiDanhSachKetQua(dsKetQua)
+    == Bước 8–11: Xem lịch sử chỉnh sửa ==
+    HD -> GD : 4: chonKetQua(maKetQua)
+    GD -> CT : 4.1: xemLichSuChinhSua(maKetQua)
+    activate CT
+    CT -> LS : 4.1.1: layLichSuTheoKetQua(maKetQua)
+    LS --> CT : dsLichSu
+    CT --> GD : dsLichSu
+    deactivate CT
+
+    alt [AF 9.1] dsLichSu rỗng
+      GD -> GD : 4.2a: hienThiThongBao("Kết quả chấm thi chưa có lịch sử chỉnh sửa.")
+      HD -> GD : 5a: xacNhanThongBao()
+      note over HD, GD : Quay lại bước 8 hoặc kết thúc
+    else Có lịch sử
+      GD -> GD : 4.2b: hienThiLichSu(dsLichSu)
+      note right of GD : điểm trước, điểm sau, thời gian,\nngười thực hiện, lý do
+      HD -> GD : 5: xemThongTinLichSu()
+    end
+  end
+end
+deactivate GD
+@enduml
